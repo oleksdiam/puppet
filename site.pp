@@ -30,7 +30,7 @@ node default {
   #   class { 'my_class': }
 }
 # here is the line 32
-node 'pclient.local' {
+node 'sonar.local' {
 
   java::oracle { 'jdk8':
     ensure        => 'present',
@@ -47,8 +47,7 @@ node 'pclient.local' {
 # here is the line 47 
 
   class { 'sonarqube':
-    arch          => 'linux-x86-64',
-    version       => '6.7.1',
+    version       => '6.7.2',
     user          => 'sonar',
     group         => 'sonar',
     service       => 'sonar',
@@ -56,21 +55,10 @@ node 'pclient.local' {
     home          => '/var/local/sonar',
     download_url  => 'https://sonarsource.bintray.com/Distribution/sonarqube',
     jdbc          => $jdbc,
-#    web_java_opts => '-Xmx1024m',
     log_folder    => '/var/local/sonar/logs',
     updatecenter  => 'true',
-   # acceptable values of <db_provider> are 'embedded' , 'mysql' , 'psql' , 'oracle'
-#    db_provider   => 'embedded'
-#    db_host       => 'localhost',
     db_provider   => 'psql',
     db_host       => 'db.local',
-#    http_proxy    => {
-#      host        => 'proxy.example.com',
-#      port        => '8080',
-#      ntlm_domain => '',
-#      user        => '',
-#      password    => '',
-#    }
   }
 }
 
