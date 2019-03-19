@@ -12,12 +12,15 @@
 
 for arg  in "$@"
 do
+  # argv=${arg##*/}
+  # echo ${argv##*.}
+
 if [ ${arg##*.} = 'erb' ]; then
-  exec erb -P -x -T '-' "$arg" | ruby -c | tr -d 'Syntax OK\n'
-elif [ ${arg##*.} == 'pp' ]; then
-  exec puppet parser validate "$arg"
-elif [ ${arg##*.} == 'epp' ]; then
-  exec puppet epp validate "$arg"
+  erb -P -x -T '-' "$arg" | ruby -c | tr -d 'Syntax OK\n'
+elif [ ${arg##*.} = 'pp' ]; then
+  puppet parser validate "$arg"
+elif [ ${arg##*.} = 'epp' ]; then
+  puppet epp validate "$arg"
 else
   continue
 fi
