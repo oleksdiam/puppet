@@ -44,7 +44,6 @@ node 'sonar.local' {
     username => 'sonarqube',
     password => 'J0benB0ben',
   }
-# here is the line 47 
 
   class { 'sonarqube':
     version       => '6.7.2',
