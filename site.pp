@@ -29,7 +29,7 @@ node default {
   # Example:
   #   class { 'my_class': }
 }
-
+# here is the line 32
 node 'sonar.local' {
 
   java::oracle { 'jdk8':
