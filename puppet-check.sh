@@ -9,6 +9,7 @@
 # Script doesn't any responce in case of successful validation
 # otherwise passes error notifications on stdout
 
+
 for arg  in "$@"
 do
 if [ ${arg##*.} = 'erb' ]; then
