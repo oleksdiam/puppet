@@ -27,17 +27,7 @@ while getopts ":p:" opt; do
 	esac
 done
 shift $(($OPTIND - 1))
-# while [ -n "$1" ]
-# do
-# case "$1" in
-# -p) PREFIX_PATH="$2"
-# shift ;;
-# --) shift
-# break ;;
-# *) echo "$1 is not an usable option";;
-# esac
-# shift
-# done
+
 for arg  in "$@"
 do
   argv="$PREFIX_PATH""${arg}"
