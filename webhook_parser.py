@@ -15,12 +15,13 @@ def cliExec(command, arg):
 
 def main(argv):
 
-    authToken    =''
+    authToken    = ''
+    pattern      = 'Readme'
     tokenPath    = '/home/odiam/.ssh/github-token'
     tempTreeFile = "/tmp/git-tree-recursive.json"
 
     try:
-        opts, args = getopt.getopt(argv,"a:f:",["authtoken=","filewithtoken="])
+        opts, args = getopt.getopt(argv,"a:f:p:",["authtoken=","filewithtoken="])
     except getopt.GetoptError:
         print('getopt error. Usage: ' + sys.argv[0] + ' -a/--authtoken= <authorization token>  <webhook payload file>')
         print(' or ' + sys.argv[0] + ' -f/--filewithtoken= <file, that contains token> <webhook payload file>')
@@ -30,18 +31,17 @@ def main(argv):
             authToken = arg
         elif opt in ("-f", "--filewithtoken"):
             tokenPath = arg
+        elif opt in ("-p", "--pattern"):
+            pattern = arg
         else:
             print('Usage: ' + sys.argv[0] + ' -a/--authtoken= <authorization token>  <webhook payload file>')
             sys.exit()
 
-    print('1st argument  '+sys.argv[1])
-    payload = open(sys.argv[1], 'r')
-
-    jsonData = json.load(payload)
+    with  open(args[0]) as payload:
+        jsonData = json.load(payload)
     head_sha = jsonData.get("after")
     repo     = jsonData.get("repository")
     commits  = jsonData.get("commits")
-    payload.close()
 
     commitList = []
     for item in range(len(commits)):
@@ -54,10 +54,9 @@ def main(argv):
     curlArg = trees_url_prefix + '/'+ head_sha + '?recursive=1 -H "Authorization: token ' + authToken +'" -o '+ tempTreeFile
     os.system("curl "+curlArg)
     
-    TreeFile = open(tempTreeFile, 'r')
-    # if not truncated
-    LoadedTree = json.load(TreeFile)
-    TreeFile.close()
+    with open(tempTreeFile) as TreeFile:
+        # if not truncated
+        LoadedTree = json.load(TreeFile)
 
     pathList = []
     treeList   = LoadedTree.get("tree")
@@ -65,11 +64,11 @@ def main(argv):
     for item in range(len(treeList)):
         itemPath = treeList[item].get("path")
         itemSHA  = treeList[item].get("sha")
-        if itemSHA in commitList and "puppet" in itemPath:
+        if (itemSHA in commitList) and (pattern in itemPath):
             pathList.append(itemPath)
     
     pathString = " ".join(pathList)
     print pathString
 
 if __name__ == "__main__":
-       main(sys.argv[1:])
+    main(sys.argv[1:])
