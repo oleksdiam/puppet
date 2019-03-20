@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # USAGE: 
-# sh puppet-check.sh -p "/path/to/root/directory/" -- file1 file2 ... fileN
+# sh puppet-check.sh -p "/path/to/root/directory/" file1 file2 ... fileN
 
 # This script is intended for syntax validation of puppet files 
 # (mainfests and templates)
@@ -17,18 +17,27 @@
 # Script doesn't any responce in case of successful validation
 # otherwise passes error notifications on stdout
 
+
 PREFIX_PATH=""
-while [ -n "$1" ]
-do
-case "$1" in
--p) PREFIX_PATH="$2"
-shift ;;
---) shift
-break ;;
-*) echo "$1 is not an usable option";;
-esac
-shift
+while getopts ":p:" opt; do
+	case $opt in
+		p) PREFIX_PATH="${OPTARG}" ;;
+		\?) logging "critical" "Invalid option: -${OPTARG}." ; exit 253 ;;
+		:) logging "critical" "Option -${OPTARG} requires an argument." ; exit 252 ;;
+	esac
 done
+shift $(($OPTIND - 1))
+# while [ -n "$1" ]
+# do
+# case "$1" in
+# -p) PREFIX_PATH="$2"
+# shift ;;
+# --) shift
+# break ;;
+# *) echo "$1 is not an usable option";;
+# esac
+# shift
+# done
 for arg  in "$@"
 do
   argv="$PREFIX_PATH""${arg}"
