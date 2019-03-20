@@ -1,2 +1,4 @@
 # puppet-check.sh
-This sript is intended to be
+USAGE: 
+sh puppet-check.sh -p "/path/to/root/directory/" -- file1 file2 ... fileN
+where file1...fileN - relative paths to listed files
