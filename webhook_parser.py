@@ -1,9 +1,17 @@
 #!/usr/bin/env python
 
+'''
+USAGE: webhook-parser.py -a/--authtoken= <authorization token> -p <pattern in the filepath>  <webhook payload file>)
+   or  webhook-parser.py -f/--filewithtoken= <file, that contains token> -p <pattern in the filepath> <webhook payload file>')
+DEFAULT VALUES:
+    filewithtoken = '/home/<username>/.ssh/github-token'
+    pattern       = 'puppet'
+'''
 import json
 import os,sys, getopt
 import subprocess
 
+# get username for token  path   !!!!!!!!!1
 # This script has to receive github 'push' webhook payload in json format
 # 
 
@@ -16,7 +24,7 @@ def cliExec(command, arg):
 def main(argv):
 
     authToken    = ''
-    pattern      = 'Readme'
+    pattern      = 'puppet'
     tokenPath    = '/home/odiam/.ssh/github-token'
     tempTreeFile = "/tmp/git-tree-recursive.json"
 
@@ -53,10 +61,12 @@ def main(argv):
     
     curlArg = trees_url_prefix + '/'+ head_sha + '?recursive=1 -H "Authorization: token ' + authToken +'" -o '+ tempTreeFile
     os.system("curl "+curlArg)
+    # LoadedTree = json.loads(os.system("curl "+curlArg))
     
     with open(tempTreeFile) as TreeFile:
         # if not truncated
         LoadedTree = json.load(TreeFile)
+    # os.remove(tempTreeFile)
 
     pathList = []
     treeList   = LoadedTree.get("tree")
@@ -67,8 +77,8 @@ def main(argv):
         if (itemSHA in commitList) and (pattern in itemPath):
             pathList.append(itemPath)
     
-    pathString = " ".join(pathList)
-    print pathString
+    print(" ".join(pathList))
+    
 
 if __name__ == "__main__":
     main(sys.argv[1:])
