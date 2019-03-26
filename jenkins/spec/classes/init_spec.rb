@@ -4,3 +4,5 @@ describe 'jenkins' do
     it { should contain_class('jenkins') }
   end
 end
+
+# comment
